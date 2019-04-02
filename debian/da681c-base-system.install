@@ -5,4 +5,3 @@ base-system/da681c_platform_init /sbin
 base-system/setinterface /sbin
 base-system/kversion /sbin
 base-system/blacklist.conf /etc/modprobe.d
-base-system/moxa-dio-control.json /etc/moxa-configs
