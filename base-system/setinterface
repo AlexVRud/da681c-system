@@ -13,9 +13,23 @@
 #	 new release based on orginal setinterface
 #
 
-# FT4232 0x20, UART Port 0:4
+# FT4232 0x20, UART Port 0:3
 UART_GPIO_0=(479 480 481 482)
 UART_GPIO_1=(483 484 485 486)
+UART_GPIO_2=(487 488 489 490)
+UART_GPIO_3=(491 492 493 494)
+
+# FT4232 0x21, UART Port 4:7
+UART_GPIO_4=(463 464 465 466)
+UART_GPIO_5=(467 468 469 470)
+UART_GPIO_6=(471 472 473 474)
+UART_GPIO_7=(475 476 477 478)
+
+# FT4232 0x22, UART Port 8:11
+UART_GPIO_8=(447 448 489 450)
+UART_GPIO_9=(451 452 453 454)
+UART_GPIO_10=(455 456 457 458)
+UART_GPIO_11=(459 460 461 462)
 
 RS232_MODE=0
 RS485_MODE=1
@@ -28,10 +42,28 @@ RS232_MODE_STR="Now setting is RS232 mode"
 RS485_MODE_STR="Now setting is RS485-2W mode"
 RS422_MODE_STR="Now setting is RS422/RS485-4W mode"
 
-# TODO max port shall be determined by model name
-MAX_GPIO_PORT_NUM=1
-
 declare CUR_UART
+
+PCBA_SERIAL=0
+PCBA_DEFAULT=0
+PCBA_RESERVE1=1
+PCBA_RESERVE2=2
+# Get PCBA board serial number to determine DA-681C model type
+# $ kversion -s
+# 0 for 2 x RS-232/422/485 ports(DB9) + 10 x RS-485-2W ports(TB)
+# 1 for 2 x RS-232/422/485 ports(DB9) + 10 x RS-422/RS-485-2W ports(TB)
+# 2 for 2 x RS-232/422/485 ports(DB9) + 10 x RS-232-4W/RS-422/RS-485-2W ports(TB)
+get_pcba_serial() {
+	serial_num=$(kversion -s)
+
+	if [ -z "$serial_num" ]; then
+		# if serial_num is empty, set to default value
+		PCBA_SERIAL=$PCBA_DEFAULT
+		return
+	fi
+
+	PCBA_SERIAL=$serial_num
+}
 
 check_root_user() {
 	if [ x"$(whoami)" != x"root" ]; then
@@ -64,11 +96,11 @@ exp_board_uart_mode() {
 
 	# set mode
 	elif [ x"$mode" == x"$RS232_MODE" ]; then
-		exp_board_set_uart_mode $RS232_MODE
+		exp_board_set_uart_mode $RS232_MODE $port
 	elif [ x"$mode" == x"$RS485_MODE" ]; then
-		exp_board_set_uart_mode $RS485_MODE
+		exp_board_set_uart_mode $RS485_MODE $port
 	elif [ x"$mode" == x"$RS422_MODE" ]; then
-		exp_board_set_uart_mode $RS422_MODE
+		exp_board_set_uart_mode $RS422_MODE $port
 	else
 		echo "Cannot recognize the mode. Exit."
 		exit -1
@@ -112,8 +144,13 @@ exp_board_get_uart_mode() {
 
 exp_board_set_uart_mode() {
 	mode=$1
+	port=$2
 	case "$mode" in
 		$RS422_MODE) # RS-422 mode
+			if [ $PCBA_SERIAL -lt $PCBA_RESERVE1 ] && [ $port -gt 1 ]; then
+				echo "Operation is not support. Exit."
+				exit 1
+			fi
 			for ((i=0; i<${#CUR_UART[@]}; i++)); do
 				echo ${RS422_GPIO_MODE[$i]} > /sys/class/gpio/gpio${CUR_UART[$i]}/value
 			done
@@ -124,6 +161,10 @@ exp_board_set_uart_mode() {
 			done
 		;;
 		$RS232_MODE) # RS-232 mode
+			if [ $PCBA_SERIAL -lt $PCBA_RESERVE2 ] && [ $port -gt 1 ]; then
+				echo "Operation is not support. Exit."
+				exit 1
+			fi
 			for ((i=0; i<${#CUR_UART[@]}; i++)); do
 				echo ${RS232_GPIO_MODE[$i]} > /sys/class/gpio/gpio${CUR_UART[$i]}/value
 			done
@@ -188,6 +229,7 @@ main() {
 	fi
 
 	check_root_user
+	get_pcba_serial
 
 	port=${1##*/dev/ttyM}
 	mode=$2
@@ -204,6 +246,13 @@ main() {
 		exit -1
 	fi
 }
+
+MAX_GPIO_PORT_NUM=1
+if dmesg | grep -q "ft260 0003:0403:6030.*"; then
+	# if the UART expansion card is on one slot
+	MAX_GPIO_PORT_NUM=$(ls /dev/ttyM* | wc -l)
+	let 'MAX_GPIO_PORT_NUM=MAX_GPIO_PORT_NUM - 1'
+fi
 
 if [ $# -eq 0 ] || [ $# -gt 2 ]; then
 	usage
