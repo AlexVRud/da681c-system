@@ -1,10 +1,11 @@
 #!/bin/bash
 
 bind_ft260_driver(){
-	for filename in /sys/bus/i2c/devices/i2c-*/name; do
-		i2c_devname=$(cat ${filename})
-		if [[ $i2c_devname == *"FT260"* ]]; then
-			i2c_devpath=$(echo ${filename%/*})
+	for filename in /sys/bus/i2c/devices/i2c-*/device/uevent; do
+		hid_devname=$(cat ${filename} | grep "HID_NAME")
+		hid_devphys=$(cat ${filename} | grep "HID_PHYS")
+		if [[ $hid_devname == *"FT260"* ]] && [[ $hid_devphys == *"input0"* ]]; then
+			i2c_devpath=$(echo ${filename%/*/*})
 			echo "pca9535 0x20" > ${i2c_devpath}/new_device
 			echo "pca9535 0x21" > ${i2c_devpath}/new_device
 			echo "pca9535 0x22" > ${i2c_devpath}/new_device
@@ -13,10 +14,11 @@ bind_ft260_driver(){
 }
 
 unbind_ft260_driver(){
-	for filename in /sys/bus/i2c/devices/i2c-*/name; do
-		i2c_devname=$(cat ${filename})
-		if [[ $i2c_devname == *"FT260"* ]]; then
-			i2c_devpath=$(echo ${filename%/*})
+	for filename in /sys/bus/i2c/devices/i2c-*/device/uevent; do
+		hid_devname=$(cat ${filename} | grep "HID_NAME")
+		hid_devphys=$(cat ${filename} | grep "HID_PHYS")
+		if [[ $hid_devname == *"FT260"* ]] && [[ $hid_devphys == *"input0"* ]]; then
+			i2c_devpath=$(echo ${filename%/*/*})
 			echo "0x20" > ${i2c_devpath}/delete_device
 			echo "0x21" > ${i2c_devpath}/delete_device
 			echo "0x22" > ${i2c_devpath}/delete_device
