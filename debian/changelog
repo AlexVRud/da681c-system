@@ -1,3 +1,12 @@
+da681c-system (1.0.1+deb9) stretch; urgency=low
+
+  * feat: add saving uart mode to setinterface and add to init script
+  * feat: add security default settings
+  * feat: add lm-sensors config and update debian control file for depends
+  * fix: update setinterface for support PCBA serial
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Tue, 16 Apr 2019 13:39:04 +0800
+
 da681c-system (1.0.0+deb9) stretch; urgency=low
 
   * Initial release.
