@@ -18,6 +18,7 @@ Description: Base system for DA-681C
 Package: da681c-modules
 Architecture: any
 Depends: ${misc:Depends},
+         linux-image-4.9.0-9-amd64 (>= 4.9.168-1)
 Description: DA-681C standard kernel modules
  The Linux kernel modules for use on DA-681C
 
