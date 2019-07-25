@@ -1,3 +1,14 @@
+da681c-system (1.0.2+deb9) stretch; urgency=low
+
+  * fix: upgrade kernel modules to 4.9.0-9-amd64
+  * feat: add gpio-pca953x to source dir
+  * feat: add mx-ver to base-system
+  * fix: da681c-modules needs to depends on linux-image-4.9.0-9-amd64
+  * fix: update kversion get product name function
+  * fix: fix adding modules list method at base-system postinst
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Wed, 24 Jul 2019 19:26:02 +0800
+
 da681c-system (1.0.1+deb9) stretch; urgency=low
 
   * feat: add saving uart mode to setinterface and add to init script
