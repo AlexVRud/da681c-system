@@ -10,6 +10,8 @@ Package: da681c-base-system
 Architecture: any
 Depends: ${misc:Depends},
          lm-sensors,
+         snmpd,
+         lldpd,
          da681c-modules (= ${binary:Version}),
          da681c-moxa-firmware (= ${binary:Version})
 Description: Base system for DA-681C
