@@ -1,3 +1,12 @@
+da681c-system (1.0.3+deb9) stretch; urgency=low
+
+  * feat: add snmpd and lldpd config for support MxView
+  * fix: update snmpd config for new OID
+  * fix: update lldpd config by sed
+  * fix: update mx-ver for removing -a option
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Wed, 31 Jul 2019 10:13:31 +0800
+
 da681c-system (1.0.2+deb9) stretch; urgency=low
 
   * fix: upgrade kernel modules to 4.9.0-9-amd64
