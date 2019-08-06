@@ -71,7 +71,8 @@ setup_default_uart_mode() {
 
 	index=0
 	while [ $index -lt $max_port_num ]; do
-		mode=$(eval "echo \$PORT$index")
+		port="PORT${index}"
+		mode=${!port}
 		devpath="/dev/ttyM$index"
 		if [ $mode -gt 2  ] || [ $mode -lt 0 ]; then
 			echo "Cannot recognize the mode. Set $devpath to RS232 mode."
@@ -80,7 +81,7 @@ setup_default_uart_mode() {
 
 		if [ $mode ] && [ -e "$devpath" ]; then
 			echo "path $devpath mode $mode"
-			eval "$UARTPROG $devpath $mode"
+			${UARTPROG} ${devpath} ${mode}
 		fi
 		let 'index=index + 1'
 	done
