@@ -10,7 +10,6 @@ base-system/setinterface.conf /etc/moxa-configs
 base-system/common-auth /etc/pam.d
 base-system/common-password /etc/pam.d
 base-system/sshd_config /etc/ssh
-base-system/moxa.sh /etc/profile.d
 base-system/sensor3.conf /etc/sensors.d
 base-system/LLDP-MIB-200505060000Z.txt /usr/share/snmp/mibs
 base-system/snmpd.conf /etc/snmp
