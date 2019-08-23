@@ -1,3 +1,16 @@
+da681c-system (1.0.4+deb9) stretch; urgency=low
+
+  * refactor: remove moxa.sh due to security scenario is not defined
+  * fix: disable MDS due to MDS CPU bug present and SMT on data leak possible
+  * refactor: remove source folder due to be maintained by driver repositories
+  * refactor: remove modules due to be maintained by driver repositories
+  * feat: add S3 suspend back event to reload ftdi driver
+  * fix: snmpd arbitrary extension commands example codes are marked
+  * fix: update fetch setinterface config file method
+  * fix: add -a option to mx-ver
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Wed, 21 Aug 2019 14:57:21 +0800
+
 da681c-system (1.0.3+deb9) stretch; urgency=low
 
   * feat: add snmpd and lldpd config for support MxView
