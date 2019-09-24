@@ -72,7 +72,7 @@ get_pcba_serial() {
 check_root_user() {
 	if [ x"$(whoami)" != x"root" ]; then
 		echo "Permission denied."
-		exit -3
+		exit 1
 	fi
 }
 
@@ -96,7 +96,7 @@ save_status() {
 	echo "Save current status to $UARTCONF ..."
 	if [[ ! -f "$UARTCONF" ]]; then
 		echo "setinterface config file $UARTCONF is not existed. Exit."
-		exit 3
+		exit 1
 	fi
 
 	index=0
@@ -116,7 +116,7 @@ get_port_mode() {
 		exp_board_uart_mode $port
 	else
 		echo "Target device port $1 is invalid. Exit."
-		exit -1
+		exit 1
 	fi
 }
 
@@ -139,7 +139,7 @@ exp_board_uart_mode() {
 		exp_board_set_uart_mode $RS422_MODE $port
 	else
 		echo "Cannot recognize the mode. Exit."
-		exit -1
+		exit 1
 	fi
 
 	exp_board_uart_mode $port
@@ -180,6 +180,7 @@ exp_board_get_uart_mode() {
 
 	echo "Cannot recognize current mode."
 	CUR_MODE=$UNKNOWN_MODE
+	exit 1
 }
 
 exp_board_set_uart_mode() {
@@ -255,7 +256,7 @@ gpio_init()
 	
 	if [ x"$CUR_UART" == x"" ]; then
 		echo "The parameter is incorrect."		
-		exit 2
+		exit 1
 	fi	
 	
 	for (( i=0; i<${#CUR_UART[@]}; i++ )); do
@@ -281,14 +282,14 @@ main() {
 
 	if [ ! -e $1 ]; then
 		echo "Target device node $1 is not existed. Exit."
-		exit -1
+		exit 1
 	fi
 
 	if [ $port -ge 0 ] && [ $port -le $MAX_GPIO_PORT_NUM ]; then
 		exp_board_uart_mode $port $mode
 	else
 		echo "Target device node $1 is not supported. Exit."
-		exit -1
+		exit 1
 	fi
 }
 
