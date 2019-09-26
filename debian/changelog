@@ -1,3 +1,12 @@
+da681c-system (1.0.5+deb9) stretch; urgency=low
+
+  * fix: add workaround for FT260 when init
+  * fix: remove da681c-modules pakcage
+  * fix: update ft260 check script and setinterface exit value
+  * fix: add retry to ft260 workaround
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Tue, 24 Sep 2019 14:16:04 +0800
+
 da681c-system (1.0.4+deb9) stretch; urgency=low
 
   * refactor: remove moxa.sh due to security scenario is not defined

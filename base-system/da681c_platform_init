@@ -3,26 +3,25 @@
 # for setup UART mode when init
 UARTCONF="/etc/moxa-configs/setinterface.conf"
 UARTPROG="/sbin/setinterface"
+MAX_FT260_RETRY=10
 
 bind_ft260_driver(){
-	for filename in /sys/bus/i2c/devices/i2c-*/device/uevent; do
-		hid_devname=$(cat ${filename} | grep "HID_NAME")
-		hid_devphys=$(cat ${filename} | grep "HID_PHYS")
-		if [[ $hid_devname == *"FT260"* ]] && [[ $hid_devphys == *"input0"* ]]; then
-			i2c_devpath=$(echo ${filename%/*/*})
+	for filename in /sys/bus/i2c/devices/i2c-*/name; do
+		i2c_devname=$(cat ${filename})
+		if [[ $i2c_devname == *"FT260"* ]]; then
+			i2c_devpath=$(echo ${filename%/*})
 			echo "pca9535 0x20" > ${i2c_devpath}/new_device
 			echo "pca9535 0x21" > ${i2c_devpath}/new_device
 			echo "pca9535 0x22" > ${i2c_devpath}/new_device
-		fi
+	fi
 	done
 }
 
 unbind_ft260_driver(){
-	for filename in /sys/bus/i2c/devices/i2c-*/device/uevent; do
-		hid_devname=$(cat ${filename} | grep "HID_NAME")
-		hid_devphys=$(cat ${filename} | grep "HID_PHYS")
-		if [[ $hid_devname == *"FT260"* ]] && [[ $hid_devphys == *"input0"* ]]; then
-			i2c_devpath=$(echo ${filename%/*/*})
+	for filename in /sys/bus/i2c/devices/i2c-*/name; do
+		i2c_devname=$(cat ${filename})
+		if [[ $i2c_devname == *"FT260"* ]]; then
+			i2c_devpath=$(echo ${filename%/*})
 			echo "0x20" > ${i2c_devpath}/delete_device
 			echo "0x21" > ${i2c_devpath}/delete_device
 			echo "0x22" > ${i2c_devpath}/delete_device
@@ -87,21 +86,56 @@ setup_default_uart_mode() {
 	done
 }
 
+# workaround for FT260 cannot send i2c message when warm reboot
+check_ft260_is_alive() {
+	for i in `seq 1 $MAX_FT260_RETRY`
+	do
+		${UARTPROG} /dev/ttyM0
+		if [ $? != 0 ]; then
+			echo "FT260 is broken, rebind USB host driver (retry: ${i}/${MAX_FT260_RETRY})"
+			echo -n "0000:00:14.0" | tee /sys/bus/pci/drivers/xhci_hcd/unbind
+			sleep 3
+			echo -n "0000:00:14.0" | tee /sys/bus/pci/drivers/xhci_hcd/bind
+			sleep 3
+
+			# re-bind drivers again
+			start_process
+		else
+			# check re-bind ok and return
+			return
+		fi
+	done
+}
+
+start_process() {
+	bind_ft260_driver
+	export_sys_gpio "moxa-gpio"
+	export_sys_gpio "pca9535"
+	setup_default_uart_mode
+}
+
+stop_procsess() {
+	export_sys_gpio "moxa-gpio" unexport
+	export_sys_gpio "pca9535" unexport
+	unbind_ft260_driver
+}
+
 main(){
 	case "$1" in
 		start)
-			bind_ft260_driver
-			export_sys_gpio "moxa-gpio"
-			export_sys_gpio "pca9535"
-			setup_default_uart_mode
+			start_process
+			check_ft260_is_alive
 		;;
 		stop)
-			export_sys_gpio "moxa-gpio" unexport
-			export_sys_gpio "pca9535" unexport
-			unbind_ft260_driver
+			stop_procsess
+		;;
+		restart)
+			stop_procsess
+			start_process
+			check_ft260_is_alive
 		;;
 		*)
-			echo "Usage: $0 start|stop" >&2
+			echo "Usage: $0 start|stop|restart" >&2
 			exit 3
 		;;
 	esac
