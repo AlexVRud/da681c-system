@@ -91,6 +91,7 @@ check_ft260_is_alive() {
 	# check serial port.
 	local serial_port="/dev/ttyM0"
 	local ret_val="0"
+	local pca953x_failed="0"
 
 	for i in `seq 1 $MAX_FT260_RETRY`
 	do
@@ -98,6 +99,8 @@ check_ft260_is_alive() {
 		ret_val="${?}"
 
 		if [ "${ret_val}" != "0" ]; then
+			pca953x_failed="1"
+			echo "Unable to read pca953x register, try to recover" > /dev/console
 			echo "FT260 is broken, rebind USB host driver (retry: ${i}/${MAX_FT260_RETRY})"
 			echo -n "0000:00:14.0" | tee /sys/bus/pci/drivers/xhci_hcd/unbind
 			sleep 3
@@ -107,6 +110,9 @@ check_ft260_is_alive() {
 			# re-bind drivers again
 			start_process
 		else
+			if [ "${pca953x_failed}" == "1" ]; then
+				echo "Read the pca953x register successfully" > /dev/console
+			fi
 			# check re-bind ok and return
 			return 0
 		fi
