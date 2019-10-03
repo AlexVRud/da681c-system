@@ -1,0 +1,13 @@
+[Unit]
+Description=Moxa DA-681C series initial setting
+After=getty.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/sleep 5
+ExecStart=/sbin/da681c_platform_init start
+ExecStop=/sbin/da681c_platform_init stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target poweroff.target
