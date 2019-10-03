@@ -1,3 +1,16 @@
+da681c-system (1.0.7) stretch; urgency=medium
+
+  * fix: display a recovery message to notify the user
+
+ -- Wes Huang <Wes.Huang@moxa.com>  Thu, 03 Oct 2019 06:37:36 -0400
+
+da681c-system (1.0.6+deb9) stretch; urgency=medium
+
+  * refactor: align style with da682c initial script
+  * fix: must return 0 otherwise systemctl will fail
+
+ -- Wes Huang <Wes.Huang@moxa.com>  Wed, 02 Oct 2019 23:37:58 -0400
+
 da681c-system (1.0.5+deb9) stretch; urgency=low
 
   * fix: add workaround for FT260 when init
