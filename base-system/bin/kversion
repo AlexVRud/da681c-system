@@ -1,0 +1,43 @@
+#!/bin/bash -e
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Name:
+#	MOXA kversion utility
+#
+# Description:
+#	The utility of getting Moxa device's information has been
+#	renamed to "mx-ver".
+#	This script is for compatible to old kversion utility.
+#
+# Authors:
+#	2019	Ken CJ Chou	<KenCJ.Chou@moxa.com>
+
+usage() {
+	echo -e "Usage: kversion\n  -a: show the build time"
+	return 0
+}
+
+main() {
+	case ${1} in
+	"-a")
+		/bin/mx-ver -a
+		;;
+	"")
+		echo "$(mx-ver -m) version $(mx-ver -v)"
+		;;
+	*)
+		usage >&2
+		return 1
+	esac
+	return 0
+}
+
+if [ "$#" -gt 1 ]; then
+	usage >&2
+	exit 99
+fi
+
+main "$@"
+exit 0
+
