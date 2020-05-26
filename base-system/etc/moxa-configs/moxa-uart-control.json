@@ -1,0 +1,34 @@
+{
+    "CONFIG_VERSION": "1.1.2",
+    "METHOD": "FILEPATH",
+    "NUM_OF_UART_PORTS": 2,
+    "UART_PORTS": [
+            "/dev/ttyM0",
+            "/dev/ttyM1"
+    ],
+    "UART_PORTS_GROUP": [
+            "1",
+            "1"
+    ],
+    "FILEPATH_PER_UART_PORT": 4,
+    "FILEPATH_OF_UART_PORTS": [
+        [
+            "/sys/class/gpio/gpio432/value",
+            "/sys/class/gpio/gpio433/value",
+            "/sys/class/gpio/gpio434/value",
+            "/sys/class/gpio/gpio435/value"
+        ],
+        [
+            "/sys/class/gpio/gpio436/value",
+            "/sys/class/gpio/gpio437/value",
+            "/sys/class/gpio/gpio438/value",
+            "/sys/class/gpio/gpio439/value"
+        ]
+    ],
+    "NUM_OF_UART_MODE": 3,
+    "UART_MODES_GROUP1": [
+            [1, 1, 0, 0],
+            [0, 0, 0, 1],
+            [0, 0, 1, 0]
+    ]
+}
