@@ -1,0 +1,190 @@
+#!/bin/bash
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Authors:
+#	2019	Elvis Yao	<ElvisCW.Yao@moxa.com>
+#
+# Platform:
+#	Moxa DA-681C series
+#
+
+UARTPROG="/sbin/mx-uart-ctl"
+MAX_FT260_RETRY=10
+
+bind_ft260_driver(){
+	for filename in /sys/bus/i2c/devices/i2c-*/name; do
+		i2c_devname=$(cat ${filename})
+		if [[ $i2c_devname == *"FT260"* ]]; then
+			i2c_devpath=$(echo ${filename%/*})
+			echo "pca9535 0x20" > ${i2c_devpath}/new_device
+			echo "pca9535 0x21" > ${i2c_devpath}/new_device
+			echo "pca9535 0x22" > ${i2c_devpath}/new_device
+	fi
+	done
+}
+
+unbind_ft260_driver(){
+	for filename in /sys/bus/i2c/devices/i2c-*/name; do
+		i2c_devname=$(cat ${filename})
+		if [[ $i2c_devname == *"FT260"* ]]; then
+			i2c_devpath=$(echo ${filename%/*})
+			echo "0x20" > ${i2c_devpath}/delete_device
+			echo "0x21" > ${i2c_devpath}/delete_device
+			echo "0x22" > ${i2c_devpath}/delete_device
+		fi
+	done
+}
+
+# workaround for FT260 cannot send i2c message when warm reboot
+check_ft260_is_alive() {
+	# check serial start from port 0
+	local ex_card_serial_port="0"
+	local ret_val="0"
+	local pca953x_failed="0"
+
+	for i in `seq 1 $MAX_FT260_RETRY`
+	do
+		if [ -e "/dev/ttyM${ex_card_serial_port}" ]; then
+			${UARTPROG} -p ${ex_card_serial_port} -m 0 2>&1 > /dev/null
+			ret_val="${?}"
+		else
+			return 0
+		fi
+
+		if [ "${ret_val}" != "0" ]; then
+			pca953x_failed="1"
+			echo "Unable to read pca953x register, try to recover" > /dev/console
+			echo "FT260 is broken, rebind USB host driver (retry: ${i}/${MAX_FT260_RETRY})"
+			echo -n "0000:00:14.0" | tee /sys/bus/pci/drivers/xhci_hcd/unbind
+			sleep 3
+			echo -n "0000:00:14.0" | tee /sys/bus/pci/drivers/xhci_hcd/bind
+			sleep 3
+
+			# re-bind drivers again
+			uart_start
+		else
+			if [ "${pca953x_failed}" == "1" ]; then
+				echo "Read the pca953x register successfully" > /dev/console
+			fi
+			# check re-bind ok and return
+			return 0
+		fi
+	done
+}
+
+init_gpio() {
+	local gpio=${1}
+	local direction=${2}
+	local value=${3}
+	local active_low=${4}
+
+	if [ ! -e "/sys/class/gpio/gpio${gpio}" ]; then
+		echo ${gpio} > "/sys/class/gpio/export"
+	fi
+
+	if [ "${direction}" == "out" ]; then
+                echo ${direction} > "/sys/class/gpio/gpio${gpio}/direction"
+                [ ! -z "${active_low}" ] && \
+                        echo ${active_low} > "/sys/class/gpio/gpio${gpio}/active_low"
+                [ ! -z "${value}" ] && \
+                        echo ${value} > "/sys/class/gpio/gpio${gpio}/value"
+	fi
+}
+
+export_batch_sysgpio() {
+	local TARGET_GPIOCHIP=$1
+	local GPIOCHIP_NAME=gpiochip
+	local GPIO_FS_PATH=/sys/class/gpio
+	local GPIO_EXPORT="export"
+
+	if [ x"$2" == x"unexport" ]; then
+		GPIO_EXPORT="unexport"
+	fi
+
+	# Export GPIOs
+	ls $GPIO_FS_PATH | grep $GPIOCHIP_NAME | while read -r chip ; do
+		GPIO_LABEL=$(cat $GPIO_FS_PATH/$chip/label)
+		if [[ "$GPIO_LABEL" != *"$TARGET_GPIOCHIP"* ]]; then
+			continue
+		fi
+
+		pinstart=$(echo $chip | sed s/$GPIOCHIP_NAME/\\n/g)
+		count=$(cat $GPIO_FS_PATH/$chip/ngpio)
+		for (( i=0; i<${count}; i++ )); do
+			init_gpio $((${pinstart}+${i})) "out" "0"
+		done
+	done
+}
+
+initial_dio() {
+	# setup DIO output pins (DO0~DO1)
+	init_gpio "467" "out" "0"
+	init_gpio "468" "out" "0"
+
+	# export DIO input pins (DI0~DI5)
+	init_gpio "506"
+	init_gpio "507"
+	init_gpio "508"
+	init_gpio "509"
+	init_gpio "470"
+	init_gpio "471"
+}
+
+initial_relay() {
+	# setup relay output value
+	init_gpio "493" "out" "0"
+}
+
+uart_start() {
+	bind_ft260_driver
+	export_batch_sysgpio "pca9535"
+
+	# UART port 0~1 default mode as RS-232
+	/sbin/mx-uart-ctl -p 0 -m 0
+	/sbin/mx-uart-ctl -p 1 -m 0
+
+	# UART port 2~11 default mode as RS-485-2W
+	init_gpio "443" "out" "1" #2
+	init_gpio "447" "out" "1" #3
+
+	init_gpio "419" "out" "1" #4
+	init_gpio "423" "out" "1" #5
+	init_gpio "427" "out" "1" #6
+	init_gpio "431" "out" "1" #7
+
+	init_gpio "403" "out" "1" #8
+	init_gpio "407" "out" "1" #9
+	init_gpio "411" "out" "1" #10
+	init_gpio "415" "out" "1" #11
+}
+
+uart_stop() {
+	export_batch_sysgpio "pca9535" unexport
+	unbind_ft260_driver
+}
+
+main(){
+	case "$1" in
+		start)
+			initial_dio
+			initial_relay
+			uart_start
+			check_ft260_is_alive
+		;;
+		stop)
+			uart_stop
+		;;
+		restart)
+			uart_stop
+			uart_start
+			check_ft260_is_alive
+		;;
+		*)
+			echo "Usage: $0 start|stop|restart" >&2
+			exit 3
+		;;
+	esac
+}
+
+main $1
