@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# and reload FTDI 4231 driver due to ttyUSB port index is swapped
-modprobe -r ftdi_sio
-modprobe ftdi_sio
-
-# it needs to restart service after S3 suspend
-systemctl stop da681c_platform_init.service
-systemctl start da681c_platform_init.service
