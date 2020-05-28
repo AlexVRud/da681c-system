@@ -1,0 +1,73 @@
+#!/bin/bash
+#
+#    Copyright (C) MOXA Inc. All rights reserved.
+#
+#    This software is distributed under the terms of the
+#    MOXA License.  See the file COPYING-MOXA for details.
+#
+#    /sbin/setinterface
+#
+#    Moxa set interface utility for DA-820C model forwards compatible
+#
+
+UART_CTL_PRG="/sbin/mx-uart-ctl"
+
+check_root_user() {
+	if [ "$(whoami)" != "root" ]; then
+		echo "Permission denied."
+		exit 1
+	fi
+}
+
+check_moxa_uart_ctl() {
+	if [ ! -f "$UART_CTL_PRG" ]; then
+		echo "$UART_CTL_PRG is not existed. Exit."
+		exit 1
+	fi
+}
+
+usage() {
+	echo -ne "Usage: /usr/bin/setinterface device-node [interface-no]\n"
+	echo -ne "\tdevice-node     - /dev/ttyMn, n = [0:${MAX_GPIO_PORT_NUM}]\n"
+	echo -ne "\tinterface-no    - following:\n"
+	echo -ne "\tnone - to view now setting\n"
+	echo -ne "\t0 - set to RS232 interface\n"
+	echo -ne "\t1 - set to RS485-2W interface\n"
+	echo -ne "\t2 - set to RS422/RS485-4W interface\n"
+	echo -ne "\n"
+	exit 0
+}
+
+main() {
+	if [ "$1" == "-h" ]; then
+		usage
+	fi
+
+	check_root_user
+	check_moxa_uart_ctl
+
+	port=${1##*/dev/ttyM}
+	mode=$2
+
+	if [ ! -e $1 ]; then
+		echo "Target device node $1 is not existed. Exit."
+		exit 1
+	fi
+
+	if [ -z "$mode" ]; then
+		$UART_CTL_PRG -p $port
+	else
+		$UART_CTL_PRG -p $port -m $mode
+	fi
+}
+
+MAX_GPIO_PORT_NUM=$(ls /dev/ttyM* | wc -l)
+MAX_GPIO_PORT_NUM=$(($MAX_GPIO_PORT_NUM-1))
+
+# if input parameters are empty, show usage
+if [ $# -eq 0 ]; then
+	usage
+	exit -1
+fi
+
+main $1 $2
