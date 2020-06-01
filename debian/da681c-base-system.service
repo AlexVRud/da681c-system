@@ -1,0 +1,14 @@
+[Unit]
+Description=Moxa DA681C series initial setting
+Requires=sys-devices-pci0000:00-0000:00:14.0-usb1-1\x2d4-1\x2d4.1-1\x2d4.1:1.0-0003:0403:6030.0001.device
+After=sys-devices-pci0000:00-0000:00:14.0-usb1-1\x2d4-1\x2d4.1-1\x2d4.1:1.0-0003:0403:6030.0001.device
+Before=rc-local.service
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/da681c_platform_init start
+ExecStop=/sbin/da681c_platform_init stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
