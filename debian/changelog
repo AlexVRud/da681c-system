@@ -1,3 +1,12 @@
+da681c-system (1.1.0) stretch; urgency=medium
+
+  * feat: support moxa-uart-control
+  * feat: support moxa-led-control
+  * feat: support moxa-dio-control
+  * refactor: change base-system to root file system style
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Mon, 22 Jun 2020 10:22:46 +0800
+
 da681c-system (1.0.7) stretch; urgency=medium
 
   * fix: display a recovery message to notify the user
