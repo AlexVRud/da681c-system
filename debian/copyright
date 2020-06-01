@@ -1,13 +1,13 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: da681c-system
-Source: http://gitlab.syssw.moxa.com/ElvisCW_Yao/da681c-system
+Source: http://gitlab.syssw.moxa.com/MXcore-Package/da681c-system
 
 Files: *
-Copyright: 2019 Moxa Corp.
+Copyright: 2020 Moxa Corp.
 License:   Apache-2.0
 
 Files: debian/*
-Copyright: 2019 Elvis Yao <ElvisCW.Yao@moxa.com>
+Copyright: 2020 Elvis Yao <ElvisCW.Yao@moxa.com>
 License:   Apache-2.0
 
 License:   Apache-2.0
