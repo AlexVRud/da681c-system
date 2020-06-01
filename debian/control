@@ -9,15 +9,28 @@ Homepage: https://www.moxa.com/
 Package: da681c-base-system
 Architecture: any
 Depends: ${misc:Depends},
-         lm-sensors,
-         snmpd,
-         lldpd,
-         da681c-moxa-firmware (= ${binary:Version})
+         libmoxa-dio-control1 (>= 1.2.0+deb9),
+         libmoxa-dio-control-dev (>= 1.2.0+deb9),
+         libmoxa-gpio-control1 (>= 1.0.3+deb9),
+         libmoxa-gpio-control-dev (>= 1.0.3+deb9),
+         libmoxa-led-control1 (>= 1.1.1+deb9),
+         libmoxa-led-control-dev (>= 1.1.1+deb9),
+         libmoxa-uart-control1 (>= 1.1.6+deb9),
+         libmoxa-uart-control-dev (>= 1.1.6+deb9),
+         moxa-it87-gpio-driver-amd64 (>= 5.2+1.1.0),
+         moxa-it87-wdt-driver-amd64 (>= 5.2+1.1.0),
+         moxa-it87-gpio-led-driver-amd64 (>= 1.0.1),
+         moxa-uart-control (>= 1.1.6+deb9),
+         moxa-dio-control (>= 1.2.0+deb9),
+         moxa-led-control (>= 1.1.1+deb9),
+         moxa-version (>= 1.1.0+deb9),
+         moxa-gpio-pca953x-driver-amd64 (>= 4.9.168+1.1.1),
+         moxa-hid-ft260-driver-amd64 (>= 1.1.0),
+         tpm2-tools (>= 3.1.3-2),
+         libtss2-udev (>= 2.1.0-4),
+         libtss2-esys0 (>= 2.1.0-4),
+         snmpd (>= 5.7.3),
+         lldpd (>= 0.9.6-1),
+         lm-sensors (>= 1:3.4.0-4)
 Description: Base system for DA-681C
  It contains the necessary tools for setting up DA-681C
-
-Package: da681c-moxa-firmware
-Architecture: any
-Depends: ${misc:Depends},
-Description: DA-681C platform firmware files.
- The Linux firmare files for use on DA-681C
