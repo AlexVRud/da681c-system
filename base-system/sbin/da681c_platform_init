@@ -141,22 +141,20 @@ uart_start() {
 	export_batch_sysgpio "pca9535"
 
 	# UART port 0~1 default mode as RS-232
-	/sbin/mx-uart-ctl -p 0 -m 0
-	/sbin/mx-uart-ctl -p 1 -m 0
+	${UARTPROG} -p 0 -m 0
+	${UARTPROG} -p 1 -m 0
 
 	# UART port 2~11 default mode as RS-485-2W
-	init_gpio "443" "out" "1" #2
-	init_gpio "447" "out" "1" #3
-
-	init_gpio "419" "out" "1" #4
-	init_gpio "423" "out" "1" #5
-	init_gpio "427" "out" "1" #6
-	init_gpio "431" "out" "1" #7
-
-	init_gpio "403" "out" "1" #8
-	init_gpio "407" "out" "1" #9
-	init_gpio "411" "out" "1" #10
-	init_gpio "415" "out" "1" #11
+	${UARTPROG} -p 2 -m 1
+	${UARTPROG} -p 3 -m 1
+	${UARTPROG} -p 4 -m 1
+	${UARTPROG} -p 5 -m 1
+	${UARTPROG} -p 6 -m 1
+	${UARTPROG} -p 7 -m 1
+	${UARTPROG} -p 8 -m 1
+	${UARTPROG} -p 9 -m 1
+	${UARTPROG} -p 10 -m 1
+	${UARTPROG} -p 11 -m 1
 }
 
 uart_stop() {
