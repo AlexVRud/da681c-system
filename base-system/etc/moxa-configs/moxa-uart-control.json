@@ -1,12 +1,32 @@
 {
     "CONFIG_VERSION": "1.1.2",
     "METHOD": "FILEPATH",
-    "NUM_OF_UART_PORTS": 2,
+    "NUM_OF_UART_PORTS": 12,
     "UART_PORTS": [
             "/dev/ttyM0",
-            "/dev/ttyM1"
+            "/dev/ttyM1",
+            "/dev/ttyM2",
+            "/dev/ttyM3",
+            "/dev/ttyM4",
+            "/dev/ttyM5",
+            "/dev/ttyM6",
+            "/dev/ttyM7",
+            "/dev/ttyM8",
+            "/dev/ttyM9",
+            "/dev/ttyM10",
+            "/dev/ttyM11"
     ],
     "UART_PORTS_GROUP": [
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
+            "1",
             "1",
             "1"
     ],
@@ -23,6 +43,66 @@
             "/sys/class/gpio/gpio437/value",
             "/sys/class/gpio/gpio438/value",
             "/sys/class/gpio/gpio439/value"
+        ],
+        [
+            "/sys/class/gpio/gpio440/value",
+            "/sys/class/gpio/gpio441/value",
+            "/sys/class/gpio/gpio442/value",
+            "/sys/class/gpio/gpio443/value"
+        ],
+        [
+            "/sys/class/gpio/gpio444/value",
+            "/sys/class/gpio/gpio445/value",
+            "/sys/class/gpio/gpio446/value",
+            "/sys/class/gpio/gpio447/value"
+        ],
+        [
+            "/sys/class/gpio/gpio416/value",
+            "/sys/class/gpio/gpio417/value",
+            "/sys/class/gpio/gpio418/value",
+            "/sys/class/gpio/gpio419/value"
+        ],
+        [
+            "/sys/class/gpio/gpio420/value",
+            "/sys/class/gpio/gpio421/value",
+            "/sys/class/gpio/gpio422/value",
+            "/sys/class/gpio/gpio423/value"
+        ],
+        [
+            "/sys/class/gpio/gpio424/value",
+            "/sys/class/gpio/gpio425/value",
+            "/sys/class/gpio/gpio426/value",
+            "/sys/class/gpio/gpio427/value"
+        ],
+        [
+            "/sys/class/gpio/gpio428/value",
+            "/sys/class/gpio/gpio429/value",
+            "/sys/class/gpio/gpio430/value",
+            "/sys/class/gpio/gpio431/value"
+        ],
+        [
+            "/sys/class/gpio/gpio400/value",
+            "/sys/class/gpio/gpio401/value",
+            "/sys/class/gpio/gpio402/value",
+            "/sys/class/gpio/gpio403/value"
+        ],
+        [
+            "/sys/class/gpio/gpio404/value",
+            "/sys/class/gpio/gpio405/value",
+            "/sys/class/gpio/gpio406/value",
+            "/sys/class/gpio/gpio407/value"
+        ],
+        [
+            "/sys/class/gpio/gpio408/value",
+            "/sys/class/gpio/gpio409/value",
+            "/sys/class/gpio/gpio410/value",
+            "/sys/class/gpio/gpio411/value"
+        ],
+        [
+            "/sys/class/gpio/gpio412/value",
+            "/sys/class/gpio/gpio413/value",
+            "/sys/class/gpio/gpio414/value",
+            "/sys/class/gpio/gpio415/value"
         ]
     ],
     "NUM_OF_UART_MODE": 3,
