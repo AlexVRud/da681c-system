@@ -117,23 +117,9 @@ export_batch_sysgpio() {
 	done
 }
 
-initial_dio() {
-	# setup DIO output pins (DO0~DO1)
-	init_gpio "467" "out" "0"
-	init_gpio "468" "out" "0"
-
-	# export DIO input pins (DI0~DI5)
-	init_gpio "506"
-	init_gpio "507"
-	init_gpio "508"
-	init_gpio "509"
-	init_gpio "470"
-	init_gpio "471"
-}
-
 initial_relay() {
-	# setup relay output value
-	init_gpio "493" "out" "0"
+	# export relay gpio pin
+	init_gpio "493"
 }
 
 uart_start() {
@@ -165,7 +151,6 @@ uart_stop() {
 main(){
 	case "$1" in
 		start)
-			initial_dio
 			initial_relay
 			uart_start
 			check_ft260_is_alive
