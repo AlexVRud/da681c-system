@@ -1,0 +1,78 @@
+da681c-system (1.1.0) stretch; urgency=medium
+
+  * feat: support moxa-uart-control
+  * feat: support moxa-led-control
+  * feat: support moxa-dio-control
+  * refactor: change base-system to root file system style
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Mon, 22 Jun 2020 10:22:46 +0800
+
+da681c-system (1.0.7) stretch; urgency=medium
+
+  * fix: display a recovery message to notify the user
+
+ -- Wes Huang <Wes.Huang@moxa.com>  Thu, 03 Oct 2019 06:37:36 -0400
+
+da681c-system (1.0.6+deb9) stretch; urgency=medium
+
+  * refactor: align style with da682c initial script
+  * fix: must return 0 otherwise systemctl will fail
+
+ -- Wes Huang <Wes.Huang@moxa.com>  Wed, 02 Oct 2019 23:37:58 -0400
+
+da681c-system (1.0.5+deb9) stretch; urgency=low
+
+  * fix: add workaround for FT260 when init
+  * fix: remove da681c-modules pakcage
+  * fix: update ft260 check script and setinterface exit value
+  * fix: add retry to ft260 workaround
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Tue, 24 Sep 2019 14:16:04 +0800
+
+da681c-system (1.0.4+deb9) stretch; urgency=low
+
+  * refactor: remove moxa.sh due to security scenario is not defined
+  * fix: disable MDS due to MDS CPU bug present and SMT on data leak possible
+  * refactor: remove source folder due to be maintained by driver repositories
+  * refactor: remove modules due to be maintained by driver repositories
+  * feat: add S3 suspend back event to reload ftdi driver
+  * fix: snmpd arbitrary extension commands example codes are marked
+  * fix: update fetch setinterface config file method
+  * fix: add -a option to mx-ver
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Wed, 21 Aug 2019 14:57:21 +0800
+
+da681c-system (1.0.3+deb9) stretch; urgency=low
+
+  * feat: add snmpd and lldpd config for support MxView
+  * fix: update snmpd config for new OID
+  * fix: update lldpd config by sed
+  * fix: update mx-ver for removing -a option
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Wed, 31 Jul 2019 10:13:31 +0800
+
+da681c-system (1.0.2+deb9) stretch; urgency=low
+
+  * fix: upgrade kernel modules to 4.9.0-9-amd64
+  * feat: add gpio-pca953x to source dir
+  * feat: add mx-ver to base-system
+  * fix: da681c-modules needs to depends on linux-image-4.9.0-9-amd64
+  * fix: update kversion get product name function
+  * fix: fix adding modules list method at base-system postinst
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Wed, 24 Jul 2019 19:26:02 +0800
+
+da681c-system (1.0.1+deb9) stretch; urgency=low
+
+  * feat: add saving uart mode to setinterface and add to init script
+  * feat: add security default settings
+  * feat: add lm-sensors config and update debian control file for depends
+  * fix: update setinterface for support PCBA serial
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Tue, 16 Apr 2019 13:39:04 +0800
+
+da681c-system (1.0.0+deb9) stretch; urgency=low
+
+  * Initial release.
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Wed, 30 Jan 2019 15:14:58 +0800

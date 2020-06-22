@@ -1,0 +1,23 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+%:
+	dh $@
+
+override_dh_installinit:
+	dh_installinit -pda681c-base-system --no-start --no-restart-after-upgrade --noscripts
+
+override_dh_missing:
+	dh_missing --fail-missing
+
+override_dh_shlibdeps:
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
+
+override_dh_strip:
+	dh_strip --no-automatic-dbgsym
+
+override_dh_systemd_start:
+	$(info Skip dh_systemd_start ...)
