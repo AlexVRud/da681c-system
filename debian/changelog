@@ -1,3 +1,12 @@
+da681c-system (1.1.1+deb9) stretch; urgency=medium
+
+  * debian: update packages depends to Debian 9.13
+  * debian: change it87 watchdog driver package as moxa-it87-wdt-driver-4.9.0-amd64
+  * refactor: ci: remove auto filling FW_VERSION when building with gitlab-ci
+  * refactor: remove auto filling FW_VERSION function
+
+ -- Elvis Yao (姚家瑋) <ElvisCW.Yao@moxa.com>  Thu, 08 Oct 2020 16:10:51 +0800
+
 da681c-system (1.1.0) stretch; urgency=medium
 
   * feat: support moxa-uart-control
