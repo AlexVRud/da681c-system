@@ -117,9 +117,48 @@ export_batch_sysgpio() {
 	done
 }
 
+gpio_request() {
+	local gpio=${1}
+
+	if [ ! -e "/sys/class/gpio/gpio${gpio}" ]
+	then
+		echo "${gpio}" > /sys/class/gpio/export
+	fi
+}
+
+gpio_set_value() {
+	local gpio=${1}
+	local value=${2}
+
+	gpio_request "${gpio}"
+	case "${value}" in
+	0)
+		echo "low" > "/sys/class/gpio/gpio${gpio}/direction"
+		;;
+	1)
+		echo "high" > "/sys/class/gpio/gpio${gpio}/direction"
+		;;
+	esac
+}
+
+gp() {
+	for gpiochip in /sys/class/gpio/gpiochip*
+	do
+		if cat "${gpiochip}"/label | grep -q "gpio_it87"
+		then
+			base=$(cat "${gpiochip}"/base)
+			break
+		fi
+	done
+
+	tens=$(($1 / 10))
+	units=$(($1 % 10))
+	echo $((base + 8 * (tens - 1) + units))
+}
+
 initial_relay() {
-	# export relay gpio pin
-	init_gpio "493"
+	# export relay gpio pin, for example gpio 493
+	gpio_set_value "$(gp 65)" 1 # GP65 RELAY_CNTRL, HW default high
 }
 
 uart_start() {
