@@ -1,1 +1,2 @@
+# use in da681c-base-system.service
 ACTION=="add", KERNEL=="0003:0403:6030.*", SUBSYSTEM=="hid", DRIVERS=="ft260", TAG+="systemd"
